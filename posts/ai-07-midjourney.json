@@ -1,0 +1,10 @@
+{
+  "title": "الفن الرقمي الجديد: سحر Midjourney ونماذج الانتشار (Diffusion)",
+  "slug": "midjourney-art",
+  "description": "كيف تحول الكلمات إلى لوحات فنية مذهلة؟ تعرف على التقنية خلف Midjourney وتأثيرها على صناعة التصميم والإبداع.",
+  "date": "2026-01-01",
+  "category": "articles",
+  "image": "https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=1200&q=80",
+  "content": "<h3 class=\"text-2xl font-bold text-purple-600 dark:text-purple-400 mb-4\">الخيال يصبح حقيقة بضغطة زر</h3><p>أحدثت أدوات توليد الصور مثل Midjourney ثورة حقيقية في عالم الفن والتصميم الرقمي. بفضل نماذج الانتشار (Diffusion Models)، التي تعمل عن طريق إضافة ضجيج (Noise) للصورة ثم تعلم كيفية إزالته لتكوين صورة واضحة، أصبح بإمكان أي شخص تحويل وصف نصي بسيط (Prompt) إلى عمل فني عالي الجودة.</p><h4 class=\"font-bold text-lg mb-2\">أداة للمبدعين، لا بديلاً عنهم</h4><p>على عكس المخاوف الأولية، بدأ الفنانون والمصممون يستخدمون هذه الأدوات كمساعد إبداعي:</p><ul class=\"list-disc list-inside space-y-2 mb-6 bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl border border-gray-200 dark:border-gray-700\"><li>توليد أفكار أولية (Mood Boards) بسرعة خيالية.</li><li>إنشاء خامات وأصول لألعاب الفيديو.</li><li>تعديل الإضاءة والأسلوب الفني في الصور الموجودة.</li></ul><h4 class=\"font-bold text-lg mb-2\">مستقبل المحتوى البصري</h4><p>مع تطور أدوات التعديل داخل الصورة (In-painting) والتحكم الدقيق في التكوين، أصبحت هذه التكنولوجيا أساسية في التسويق وصناعة المحتوى. التحدي القادم هو الانتقال من الصور الثابتة إلى توليد الفيديو بنفس الدقة والجودة، وهو ما بدأت تظهر بوادره بالفعل.</p><div class=\"my-8 w-full flex justify-center px-1 sm:px-0\"><a href=\"https://midjourney.com\" target=\"_blank\" class=\"btn-wrapped-link w-full sm:w-auto sm:min-w-[280px] max-w-md mx-auto\"><i data-lucide=\"image\"></i><span class=\"break-words\">جرب Midjourney</span></a></div>",
+  "id": "ai-07-midjourney"
+}
