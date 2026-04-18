@@ -1,0 +1,81 @@
+{
+  "profileName": "كنان الصائغ",
+  "profileImage": "assets/images/1774458438604_Screenshot_٢٠٢٥-٠٣-٢٨-٢٠-٥٤-٢٥-٩٣_99c04817c0de5652397fc8b56c3b3817.webp",
+  "bio": "أنا كنان مجيد الصائغ، من مواليد 1988، مهتم بالأخبار والمعلومات التقنية والذكاء الاصطناعي. أعمل على نشر المحتوى التقني، وأدوات وتقنيات الذكاء الاصطناعي، والتطبيقات المعدلة.",
+  "botInfo": "نحن في Kinantouch نحترم خصوصية زوارنا ونلتزم بحماية أي معلومات يتم جمعها أثناء تصفح الموقع.\nباستخدامك لهذا الموقع فإنك توافق على سياسة الخصوصية الموضحة أدناه.\n\nقد يتم عرض إعلانات من طرف ثالث عبر شبكة Adsterra..\nالموقع لا يتحكم بمحتوى الإعلانات المعروضة.",
+  "searchInfo": "",
+  "botTitle": "سياسة الخصوصية",
+  "searchTitle": "نشر الاخبار التقنية والذكاء الاصطناعي",
+  "coverType": "image",
+  "coverValue": "assets/images/1770513680706_IMG_20260131_212859_0807.webp",
+  "siteName": "TechTouch",
+  "logoType": "image",
+  "logoUrl": "assets/images/1770924402142_٢٠٢٦٠٢١٢_٢٢٢٦٢١.webp",
+  "categories": {
+    "labels": {
+      "articles": "اخبار",
+      "apps": "تطبيقات",
+      "games": "ألعاب",
+      "sports": "رياضة"
+    }
+  },
+  "globalFonts": {
+    "nav": 14,
+    "content": 15,
+    "titles": 15,
+    "mainTitles": 26
+  },
+  "ticker": {
+    "label": "جديد",
+    "text": "أهلاً بكم في موقعنا المختص بنشر المقالات التقنية والتطبيقات والمزيد ..",
+    "url": "#",
+    "type": "text",
+    "imageUrl": "",
+    "fontSize": 14,
+    "animated": true,
+    "enabled": false
+  },
+  "adBanner": {
+    "enabled": true,
+    "type": "image",
+    "text": "",
+    "url": "https://kinantouch.com/tools-sites",
+    "textColor": "",
+    "bgColor": "",
+    "imageUrl": "assets/images/1770513653193_images_(19).webp"
+  },
+  "social": {
+    "facebook": "https://www.facebook.com/share/1EsapVHA6W/",
+    "instagram": "https://www.instagram.com/techtouch0",
+    "tiktok": "https://www.tiktok.com/@techtouch6",
+    "youtube": "https://youtube.com/@kinanmajeed?si=I2yuzJT2rRnEHLVg",
+    "telegram": "https://t.me/techtouch7"
+  },
+  "socialIcons": {
+    "facebook": {
+      "type": "image",
+      "value": "assets/images/1774254151689_20260323_035406.webp",
+      "size": "100"
+    },
+    "instagram": {
+      "type": "image",
+      "value": "assets/images/1774254018837_20260323_040122.webp",
+      "size": "100"
+    },
+    "tiktok": {
+      "type": "image",
+      "value": "assets/images/1774254050936_20260323_035604.webp",
+      "size": "100"
+    },
+    "youtube": {
+      "type": "image",
+      "value": "assets/images/1774257091669_20260323_040457.webp",
+      "size": "100"
+    },
+    "telegram": {
+      "type": "image",
+      "value": "assets/images/1774253846302_20260323_035134.webp",
+      "size": "100"
+    }
+  }
+}
