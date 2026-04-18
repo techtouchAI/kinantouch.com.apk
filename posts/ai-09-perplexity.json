@@ -1,0 +1,10 @@
+{
+  "title": "وداعاً للروابط التقليدية: كيف يغير Perplexity AI مفهوم البحث؟",
+  "slug": "perplexity-search",
+  "description": "هل انتهى عصر محركات البحث التقليدية؟ اكتشف كيف تقدم محركات الإجابة (Answer Engines) معلومات دقيقة وموثقة فورياً.",
+  "date": "2026-01-01",
+  "category": "articles",
+  "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80",
+  "content": "<h3 class=\"text-2xl font-bold text-teal-600 dark:text-teal-400 mb-4\">من محرك بحث إلى محرك إجابة</h3><p>لسنوات طويلة، اعتدنا على محركات البحث التي تقدم لنا قائمة من الروابط الزرقاء لنبحث بداخلها. الآن، يغير Perplexity AI هذه اللعبة تماماً بتقديم \"محرك إجابة\". يعتمد النظام على دمج النماذج اللغوية الكبيرة (LLM) مع قدرات استرجاع المعلومات الفورية من الويب.</p><h4 class=\"font-bold text-lg mb-2\">لماذا يتفوق على البحث التقليدي؟</h4><ul class=\"list-disc list-inside space-y-2 mb-6 bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl border border-gray-200 dark:border-gray-700\"><li><strong>إجابات مباشرة:</strong> ستحصل على ملخص دقيق للإجابة بدلاً من الروابط، مما يوفر الوقت والجهد.</li><li><strong>التوثيق والمصادر:</strong> كل معلومة يقدمها النظام تكون مدعومة بروابط مرجعية (Citations) لضمان المصداقية، وهو ما يحل مشكلة \"هلوسة\" النماذج العادية.</li><li><strong>فهم السياق:</strong> يمكنك طرح أسئلة متابعة (Follow-up) وسيفهم المحرك سياق الحديث كما لو كنت تتحدث مع خبير.</li></ul><h4 class=\"font-bold text-lg mb-2\">أداة للباحثين والصحفيين</h4><p>أصبح Perplexity أداة لا غنى عنها للبحث الأكاديمي والصحفي بفضل دقته وسرعته. ومع احتدام المنافسة، يتجه المستقبل نحو تخصيص نتائج البحث بناءً على تفضيلات المستخدم وسلوكه، ليصبح الإنترنت أكثر ذكاءً وفائدة.</p><div class=\"my-8 w-full flex justify-center px-1 sm:px-0\"><a href=\"https://www.perplexity.ai\" target=\"_blank\" class=\"btn-wrapped-link w-full sm:w-auto sm:min-w-[280px] max-w-md mx-auto\"><i data-lucide=\"search\"></i><span class=\"break-words\">جرب البحث الذكي الآن</span></a></div>",
+  "id": "ai-09-perplexity"
+}
