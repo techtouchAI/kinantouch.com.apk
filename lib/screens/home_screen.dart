@@ -1,180 +1,193 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/post.dart';
 import '../models/category.dart';
-import '../models/about.dart';
 import '../services/api_service.dart';
 import 'article_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   final ApiService _apiService = ApiService();
   List<Post> _allPosts = [];
-  List<Post> _filteredPosts = [];
+  List<Post> _displayPosts = [];
   List<Category> _categories = [];
-  About? _about;
-  String _selectedCategory = 'all';
+  String _selectedCategoryId = 'all';
   bool _isLoading = true;
+  String _searchQuery = '';
+  int _perPage = 10;
+  int _currentPage = 1;
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    _initData();
   }
 
-  Future<void> _loadData() async {
+  Future<void> _initData() async {
     setState(() => _isLoading = true);
-    try {
-      final cats = await _apiService.fetchCategories();
-      final posts = await _apiService.fetchAllPosts();
-      final about = await _apiService.fetchAbout();
+    await _apiService.init();
+    await _loadContent();
+  }
+
+  Future<void> _loadContent() async {
+    final results = await Future.wait([
+      _apiService.fetchCategories(),
+      _apiService.fetchPostsSummary(),
+    ]);
+
+    if (mounted) {
       setState(() {
-        _categories = cats;
-        _allPosts = posts;
-        _about = about;
-        _filterPosts(_selectedCategory);
+        _categories = results[0] as List<Category>;
+        _allPosts = results[1] as List<Post>;
+        _currentPage = 1;
+        _applyFilters();
         _isLoading = false;
       });
-    } catch (e) {
-      setState(() => _isLoading = false);
     }
   }
 
-  void _filterPosts(String categoryId) {
+  void _applyFilters() {
+    List<Post> filtered = _allPosts.where((post) {
+      final matchesCategory = _selectedCategoryId == 'all' || post.category == _selectedCategoryId;
+      final matchesSearch = post.title.contains(_searchQuery) || post.summary.contains(_searchQuery);
+      return matchesCategory && matchesSearch;
+    }).toList();
+
     setState(() {
-      _selectedCategory = categoryId;
-      if (categoryId == 'all') {
-        _filteredPosts = _allPosts;
-      } else {
-        _filteredPosts = _allPosts.where((p) => p.category == categoryId).toList();
-      }
+      _displayPosts = filtered.take(_currentPage * _perPage).toList();
+    });
+  }
+
+  void _loadMore() {
+    setState(() {
+      _currentPage++;
+      _applyFilters();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F5F9),
-      appBar: AppBar(
-        title: Text(_about?.siteName ?? 'TechTouch'),
-        actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _loadData),
-        ],
-      ),
+      backgroundColor: const Color(0xFFF8F9FA),
       drawer: _buildDrawer(),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                _buildCategoryFilter(),
-                Expanded(
-                  child: RefreshIndicator(
-                    onRefresh: _loadData,
-                    child: _filteredPosts.isEmpty 
-                      ? const Center(child: Text('لا توجد مقالات في هذا القسم'))
-                      : ListView.builder(
-                          padding: const EdgeInsets.all(16),
-                          itemCount: _filteredPosts.length,
-                          itemBuilder: (context, index) => _buildPostCard(_filteredPosts[index]),
-                        ),
+      body: CustomScrollView(
+        slivers: [
+          _buildSliverAppBar(),
+          SliverToBoxAdapter(
+            child: _buildCategoryBar(),
+          ),
+          _isLoading ? _buildSliverLoading() : _buildSliverPostList(),
+          if (!_isLoading && _displayPosts.length < _allPosts.length && _searchQuery.isEmpty && _selectedCategoryId == 'all')
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Center(
+                  child: TextButton(
+                    onPressed: _loadMore,
+                    child: const Text('تحميل المزيد', style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
-              ],
+              ),
             ),
-    );
-  }
-
-  Widget _buildDrawer() {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: const BoxDecoration(color: Color(0xFF2563EB)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.white,
-                  child: Icon(Icons.person, size: 40, color: Color(0xFF2563EB)),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  _about?.profileName ?? 'TechTouch',
-                  style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  _about?.siteName ?? 'kinantouch.com',
-                  style: const TextStyle(color: Colors.white70, fontSize: 14),
-                ),
-              ],
-            ),
-          ),
-          if (_about != null)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(_about!.bio, style: const TextStyle(fontSize: 14)),
-            ),
-          const Divider(),
-          const ListTile(title: Text('الأقسام', style: TextStyle(fontWeight: FontWeight.bold))),
-          ListTile(
-            leading: const Icon(Icons.apps),
-            title: const Text('الكل'),
-            selected: _selectedCategory == 'all',
-            onTap: () {
-              _filterPosts('all');
-              Navigator.pop(context);
-            },
-          ),
-          ..._categories.map((cat) => ListTile(
-            title: Text(cat.name),
-            selected: _selectedCategory == cat.id,
-            onTap: () {
-              _filterPosts(cat.id);
-              Navigator.pop(context);
-            },
-          )),
-          const Divider(),
-          const ListTile(title: Text('تواصل معنا', style: TextStyle(fontWeight: FontWeight.bold))),
-          if (_about != null)
-            ..._about!.social.entries.map((e) => ListTile(
-              leading: const Icon(Icons.link),
-              title: Text(e.key.toUpperCase()),
-              onTap: () => launchUrl(Uri.parse(e.value)),
-            )),
         ],
       ),
     );
   }
 
-  Widget _buildCategoryFilter() {
+  Widget _buildSliverAppBar() {
+    return SliverAppBar(
+      expandedHeight: 120.0,
+      floating: false,
+      pinned: true,
+      elevation: 0,
+      backgroundColor: Colors.white,
+      flexibleSpace: FlexibleSpaceBar(
+        centerTitle: true,
+        title: Text(
+          'كينان تاتش',
+          style: TextStyle(
+            color: Colors.blue[900],
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.search, color: Colors.black87),
+          onPressed: () => _showSearchDialog(),
+        ),
+      ],
+    );
+  }
+
+  void _showSearchDialog() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 20, right: 20, top: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              autofocus: true,
+              decoration: InputDecoration(
+                hintText: 'ابحث عن أي شيء...',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+              ),
+              onChanged: (val) {
+                setState(() {
+                  _searchQuery = val;
+                  _applyFilters();
+                });
+              },
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCategoryBar() {
     return Container(
-      height: 50,
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      height: 60,
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: _categories.length + 1,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         itemBuilder: (context, index) {
-          final id = index == 0 ? 'all' : _categories[index - 1].id;
-          final name = index == 0 ? 'الكل' : _categories[index - 1].name;
-          final isSelected = _selectedCategory == id;
-          
+          final isAll = index == 0;
+          final catId = isAll ? 'all' : _categories[index - 1].id;
+          final catName = isAll ? 'الكل' : _categories[index - 1].name;
+          final isSelected = _selectedCategoryId == catId;
+
           return Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: ActionChip(
-              label: Text(name),
-              onPressed: () => _filterPosts(id),
-              backgroundColor: isSelected ? const Color(0xFF2563EB) : Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: ChoiceChip(
+              label: Text(catName),
+              selected: isSelected,
+              onSelected: (selected) {
+                setState(() {
+                  _selectedCategoryId = catId;
+                  _applyFilters();
+                });
+              },
+              selectedColor: Colors.blue[600],
               labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black87),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             ),
           );
         },
@@ -182,84 +195,171 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildPostCard(Post post) {
-    String imageUrl = post.image;
-    if (!imageUrl.startsWith('http')) {
-      imageUrl = 'https://kinantouch.com/$imageUrl';
+  Widget _buildSliverPostList() {
+    if (_displayPosts.isEmpty) {
+      return const SliverToBoxAdapter(
+        child: Center(child: Padding(padding: EdgeInsets.all(50), child: Text('لا يوجد محتوى متوفر'))),
+      );
     }
 
-    return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => ArticleDetailScreen(post: post)),
-      ),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Image.network(
-                  imageUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    color: Colors.grey[200],
-                    child: const Icon(Icons.image_not_supported, size: 50, color: Colors.grey),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        _getCategoryName(post.category),
-                        style: const TextStyle(color: Color(0xFF2563EB), fontWeight: FontWeight.bold, fontSize: 12),
-                      ),
-                      Text(post.date, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    post.title,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, height: 1.4),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    post.description,
-                    style: TextStyle(fontSize: 14, color: Colors.grey[600], height: 1.5),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-          ],
+    return SliverPadding(
+      padding: const EdgeInsets.all(12),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            final post = _displayPosts[index];
+            return _buildPostCard(post);
+          },
+          childCount: _displayPosts.length,
         ),
       ),
     );
   }
 
-  String _getCategoryName(String id) {
-    try {
-      return _categories.firstWhere((c) => c.id == id).name;
-    } catch (e) {
-      return id;
+  Widget _buildPostCard(Post post) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => ArticleDetailScreen(postSummary: post)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AspectRatio(
+                aspectRatio: 16 / 9,
+                child: CachedNetworkImage(
+                  imageUrl: post.image,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Shimmer.fromColors(
+                    baseColor: Colors.grey[300]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: Container(color: Colors.white),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: Colors.grey[200],
+                    child: const Icon(Icons.image_not_supported, size: 40, color: Colors.grey),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(color: Colors.blue[50], borderRadius: BorderRadius.circular(8)),
+                          child: Text(
+                            post.category.toUpperCase(),
+                            style: TextStyle(color: Colors.blue[800], fontSize: 10, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const Spacer(),
+                        Text(post.date, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      post.title,
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, height: 1.3),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      post.summary,
+                      style: TextStyle(color: Colors.grey[600], fontSize: 14, height: 1.5),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSliverLoading() {
+    return SliverPadding(
+      padding: const EdgeInsets.all(12),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) => Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: 280,
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+            ),
+          ),
+          childCount: 3,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDrawer() {
+    return Drawer(
+      child: Column(
+        children: [
+          UserAccountsDrawerHeader(
+            accountName: const Text('كينان تاتش', style: TextStyle(fontWeight: FontWeight.bold)),
+            accountEmail: const Text('kinantouch.com'),
+            currentAccountPicture: const CircleAvatar(
+              backgroundImage: AssetImage('assets/images/logo.png'),
+            ),
+            decoration: BoxDecoration(color: Colors.blue[900]),
+          ),
+          ListTile(
+            leading: const Icon(Icons.home),
+            title: const Text('الرئيسية'),
+            onTap: () => Navigator.pop(context),
+          ),
+          ListTile(
+            leading: const Icon(Icons.favorite),
+            title: const Text('المفضلة'),
+            onTap: () {
+              // TODO: Implement Favorites Screen
+              Navigator.pop(context);
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(FontAwesomeIcons.globe),
+            title: const Text('الموقع الرسمي'),
+            onTap: () => _launchURL('https://kinantouch.com'),
+          ),
+          const Spacer(),
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text('إصدار 1.0.0', style: TextStyle(color: Colors.grey, fontSize: 12)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _launchURL(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
 }
