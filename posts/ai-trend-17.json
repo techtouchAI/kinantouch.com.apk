@@ -1,0 +1,15 @@
+{
+  "title": "منصات غيرت قواعد اللعبة: تعرف على Z.ai وManus",
+  "slug": "game-changing-ai-platforms",
+  "description": "جيل جديد من الوكلاء المستقلين وأنظمة تحويل النص إلى فيديو تصل إلى الأسواق.",
+  "category": "articles",
+  "date": "2026-01-27",
+  "time": "00:00",
+  "updated": "2026-02-11",
+  "image": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=80",
+  "content": "<h3 class=\"text-2xl font-bold text-purple-600 dark:text-purple-400 mb-4\">ما وراء الحدود الحالية</h3><p>شهدنا مؤخراً إطلاق منصات نقلت الذكاء الاصطناعي من مرحلة \"المساعد\" إلى مرحلة \"الفاعل\":</p><div class=\"grid grid-cols-1 gap-4 mb-6\"><div class=\"bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-200 dark:border-gray-700\"><h4 class=\"font-bold mb-2 text-lg\">Z.ai: التحكم الشامل</h4><p class=\"text-sm\">منصة تجمع نماذج لغة متقدمة مع أنظمة تحويل النص إلى فيديو، والأهم: قدرتها على تشغيل الهاتف الذكي وتنفيذ مهام معقدة عبر أوامر صوتية فقط.</p></div><div class=\"bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-200 dark:border-gray-700\"><h4 class=\"font-bold mb-2 text-lg\">Manus: الوكيل المستقل</h4><p class=\"text-sm\">وكيل AI لا يحتاج إلى توجيه مستمر. تعطيه هدفاً (مثلاً: خطط لرحلة كاملة واحجز التذاكر)، وسيقوم هو بالبحث، المقارنة، الدفع، وإرسال التأكيدات لك دون تدخل.</p></div></div><div class=\"my-8 w-full flex justify-center px-1 sm:px-0\"><a href=\"https://en.wikipedia.org/wiki/Artificial_intelligence\" target=\"_blank\" class=\"btn-wrapped-link w-full sm:w-auto sm:min-w-[280px] max-w-md mx-auto\"><i data-lucide=\"cpu\"></i><span class=\"break-words\">المزيد على ويكيبيديا</span></a></div>",
+  "youtubeVideoId": "",
+  "summary": "",
+  "renderMode": "markdown",
+  "id": "ai-trend-17"
+}
