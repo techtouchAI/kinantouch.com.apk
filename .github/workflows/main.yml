@@ -37,3 +37,4 @@ jobs:
         with:
           name: KinanTouch-APK
           path: build/app/outputs/flutter-apk/app-release.apk
+
